@@ -1,0 +1,601 @@
+\documentclass[a4paper,fleqn]{cas-dc}
+
+\documentclass[a4paper,fleqn,longmktitle]{cas-dc}
+
+%\usepackage[numbers]{natbib}
+%\usepackage[authoryear]{natbib}
+\usepackage[authoryear,longnamesfirst]{natbib}
+\usepackage{subfigure}
+\usepackage{xcolor}
+% \usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\usepackage{array}
+
+\usepackage{float}
+\usepackage{lineno}
+\usepackage{soul}
+\usepackage{placeins}
+
+%%%Author macros
+\def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
+\tsc{WGM}
+\tsc{QE}
+%%%
+
+
+
+\begin{document}
+% \linenumbers
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
+
+% Short title
+\shorttitle    
+
+% Short author
+%\shortauthors{Tonmoy et~al.}  
+
+% Main title of the paper
+\title [mode = title]{Machine Learning - Based Air Quality Index Category Prediction }  
+% Title footnote mark
+% eg: \tnotemark[1]
+% \tnotemark[<tnote number>] 
+
+% Title footnote 1.
+% eg: \tnotetext[1]{Title footnote text}
+% \tnotetext[<tnote number>]{<tnote text>} 
+
+% First author
+%
+% Options: Use if required
+% eg: \author[1,3]{Author Name}[type=editor,
+%       style=chinese,
+%       auid=000,
+%       bioid=1,
+%       prefix=Sir,
+%       orcid=0000-0000-0000-0000,
+%       facebook=<facebook id>,
+%       twitter=<twitter id>,
+%       linkedin=<linkedin id>,
+%       gplus=<gplus id>]
+
+\author[1]{MD. Ibrahim Khalil}[orcid=]
+\ead{22-48917-3@student.aiub.edu}
+\credit{}
+\affiliation[1]{organization={Department of Computer Science and Engineering, American International University - Bangladesh},
+    % addressline={}, 
+    city={Dhaka},
+    % citysep={}, % Uncomment if no comma needed between city and postcode
+    postcode={1229},
+    % state={},
+    country={Bangladesh}}
+
+\author[2]{Abid Hossain Ove }[orcid=]
+\ead{22-48541-3@student.aiub.edu}
+\credit{}
+
+
+\affiliation[2]{organization={Department of Computer Science and Engineering, American International University - Bangladesh},
+            % addressline={}, 
+            city={Dhaka},
+%          citysep={}, % Uncomment if no comma needed between city and postcode
+            postcode={1229 }, 
+            % state={},
+            country={Bangladesh}}
+
+
+
+
+
+
+%\author[3]{Jungpil Shin}[orcid=0000-0002-7476-2468]
+%\ead{}
+%\credit{Visualization, Writing - Review \& Editing }
+%\affiliation[3]{organization={School of Computer Science and Engineering, The University of Aizu},
+            % addressline={}, 
+           % city={Aizuwakamatsu},
+%          citysep={}, % Uncomment if no comma needed between city and postcode
+            % postcode={}, 
+            % state={},
+           % country={Japan}}
+
+
+% Footnote text
+% \fntext[1]{}
+
+% For a title note without a number/mark
+%\nonumnote{}
+
+% Here goes the abstract
+\begin{abstract}
+Air pollution has become one of the most critical environmental issues affecting human health, climate, and sustainable development. The Air Quality Index (AQI) is a standardized measure used to represent air quality levels and their associated health impacts. Accurate prediction of AQI categories is essential for timely decision-making and effective pollution management. In this study, machine learning techniques are employed to predict AQI categories based on historical air quality data consisting of pollutants such as PM2.5, PM10, NO\textsubscript{2}, SO\textsubscript{2}, CO, and O\textsubscript{3}. Various supervised learning algorithms, including Decision Trees, Random Forest, Support Vector Machines (SVM), and Gradient Boosting, are trained and evaluated on benchmark datasets. Performance is assessed using accuracy, precision, recall, and F1-score metrics. The experimental results demonstrate that ensemble-based models, particularly Random Forest and Gradient Boosting, achieve superior predictive performance compared to traditional classifiers. This research highlights the potential of machine learning in developing intelligent AQI prediction systems, which can support environmental agencies and policymakers in mitigating air pollution risks and improving public health awareness.
+\end{abstract}
+
+
+
+
+
+% Keywords
+% Each keyword is seperated by \sep
+\begin{keywords}
+\sep Air Quality Index (AQI) 
+\sep Machine Learning 
+\sep Supervised Learning 
+\sep Random Forest 
+\sep Gradient Boosting 
+\sep Support Vector Machines (SVM) 
+\sep Environmental Prediction 
+\sep Public Health
+\end{keywords}
+
+
+\maketitle
+
+
+% Main text
+\section{Introduction}
+\label{sec:introduction}
+
+Air pollution remains a formidable global challenge with profound implications for public health, ecosystems, and climate stability. Pollutants such as fine particulate matter (PM\textsubscript{2.5} and PM\textsubscript{10}), ground-level ozone (O\textsubscript{3}), nitrogen dioxide (NO\textsubscript{2}), sulfur dioxide (SO\textsubscript{2}), and carbon monoxide (CO) are unequivocally linked to a spectrum of adverse health outcomes, including respiratory and cardiovascular diseases, as well as elevated mortality rates across diverse demographics, particularly affecting children and the elderly \cite{who_report_2021}.
+
+The Air Quality Index (AQI) serves as a standardized metric to effectively communicate health risks to the public, translating complex pollutant concentrations into easily understandable categories (e.g., Good, Moderate, Unhealthy, Hazardous) \cite{epa_aqi_2020}. However, accurate AQI forecasting presents substantial challenges due to nonlinear interactions between pollutants, significant spatiotemporal variability, and often sparse monitoring infrastructure, especially in developing regions like Bangladesh \cite{world_bank_2021}.
+
+Dhaka, as one of the world's most densely populated megacities, experiences severe air pollution episodes, particularly during the dry season (November-April) when meteorological conditions trap pollutants near the ground. The city's air quality is influenced by multiple factors including vehicular emissions, industrial activities, construction dust, and brick kiln operations \cite{dob_2022}. Traditional statistical forecasting methods like ARIMA have shown limitations in capturing these complex, nonlinear relationships driven by diverse environmental factors \cite{zhang_2017}.
+
+This study addresses the critical need for practical air quality forecasting by developing a machine learning framework specifically designed for daily AQI category prediction in Dhaka. Unlike previous approaches that primarily focus on continuous AQI value prediction or long-term trends, our work emphasizes classification into actionable health risk categories. The main objectives of this research are:
+
+\begin{enumerate}
+    \item To collect and preprocess historical hourly air quality data for Dhaka (2016-2022)
+    \item To implement and train multiple machine learning classification models (MLP, Random Forest, SVM, etc.)
+    \item To evaluate and identify the best-performing model for daily AQI category prediction
+    \item To develop a practical framework suitable for resource-constrained environments
+\end{enumerate}
+
+By focusing on categorical prediction with streamlined feature sets, this research aims to provide timely, actionable information that can support public health decisions and interventions in Dhaka.
+
+
+
+
+
+
+
+
+
+
+\section{Related Work}
+\label{sec:related_work}
+
+The evolution of air quality prediction methodologies has progressed from traditional statistical approaches to advanced machine learning and deep learning techniques. This section reviews key developments in AQI forecasting relevant to our study.
+
+\subsection{Traditional Statistical Approaches}
+
+Early research in air quality forecasting predominantly employed statistical time-series models. Autoregressive Integrated Moving Average (ARIMA) models have been widely applied for their ability to capture temporal patterns in pollutant concentrations \cite{box_jenkins_1976}. Studies by Liu et al. \cite{liu_2018} demonstrated ARIMA's effectiveness in short-term PM\textsubscript{2.5} forecasting in Chinese cities, though the model showed limitations in handling nonlinear relationships and external factors. Seasonal ARIMA (SARIMA) extensions have been used to account for periodic variations, as shown in Islam et al.'s work on weekly AQI patterns in Dhaka and Sylhet \cite{islam_2021_sarima}.
+
+\subsection{Machine Learning Advancements}
+
+The limitations of traditional statistical methods prompted the adoption of machine learning approaches. Ensemble methods have shown particular promise in AQI prediction tasks. Gupta et al. \cite{gupta_2021} conducted comprehensive comparisons of Support Vector Regression (SVR), Random Forest, and CatBoost across Indian cities, noting significant improvements when addressing data imbalance through techniques like SMOTE. Random Forest has been consistently valued for its robustness against overfitting and ability to handle complex feature interactions \cite{breiman_2001}.
+
+Gradient boosting algorithms, including XGBoost and CatBoost, have demonstrated superior performance in handling high-dimensional pollutant data. Sitha Ram et al. \cite{sitha_ram_2021} reported XGBoost achieving 96.5\% accuracy in AQI classification tasks, while Chaturvedi \cite{chaturvedi_2022} found ensemble methods achieving up to 99\% accuracy in Varanasi's AQI prediction. Hybrid approaches combining multiple models have also been explored, with Singh et al. \cite{singh_2021} integrating SVM with Logistic Regression and Naïve Bayes to achieve 98\% classification accuracy.
+
+\subsection{Integration of Diverse Data Sources}
+
+A significant trend in recent research involves incorporating multimodal data sources beyond traditional ground monitoring stations. Satellite-derived data, particularly aerosol optical depth (AOD) measurements, have been successfully integrated with machine learning models to enhance prediction accuracy. Islam et al. \cite{islam_2022_satellite} combined satellite data with meteorological variables using regression trees for PM\textsubscript{2.5} estimation in Dhaka, demonstrating the value of geospatial information. Similarly, Li et al. \cite{li_2020} developed CNN-based models utilizing satellite imagery for spatiotemporal PM\textsubscript{2.5} prediction across multiple cities.
+
+\subsection{Deep Learning Approaches}
+
+Recent advancements have seen the application of deep learning architectures for air quality forecasting. Long Short-Term Memory (LSTM) networks have proven effective in capturing temporal dependencies in pollution data \cite{hochreiter_1997}. Zaytar and El Amrani \cite{zaytar_2016} demonstrated LSTM's superiority over traditional methods for sequence prediction tasks. Convolutional Neural Networks (CNN) have been employed for spatial feature extraction from gridded environmental data \cite{lecun_1998}.
+
+Hybrid architectures combining CNN and LSTM components represent the current state-of-the-art, enabling simultaneous modeling of spatial and temporal patterns. Yi et al. \cite{yi_2021} developed a CNN-LSTM hybrid that significantly outperformed individual models in PM\textsubscript{2.5} prediction tasks. Attention mechanisms and transformer architectures have further enhanced model capabilities in capturing long-range dependencies \cite{vaswani_2017}.
+
+\subsection{Research Gap and Contribution}
+
+Despite these advancements, several limitations persist in the current literature. Most studies focus on continuous AQI value prediction (regression) rather than categorical classification, despite the latter's greater practical utility for public health guidance. There is also a predominant reliance on extensive feature sets and computational resources, limiting practical deployment in resource-constrained environments like Dhaka \cite{kumar_2022}.
+
+Our work addresses these gaps by:
+\begin{itemize}
+    \item Focusing specifically on daily AQI category prediction for actionable public health information
+    \item Developing a streamlined framework suitable for environments with limited computational resources
+    \item Providing comprehensive evaluation of multiple machine learning approaches for categorical prediction
+    \item Emphasizing practical deployment considerations alongside predictive accuracy
+\end{itemize}
+
+This research contributes to the field by bridging the gap between advanced forecasting techniques and practical implementation needs in developing urban contexts.
+
+
+
+
+\section{Methodology}\label{sec:methodology}
+
+
+
+
+\subsection{Data Collection}
+For this project I mainly relied on the Kaggle dataset called \textit{``Dhaka Hourly Air Quality (2016--2022)''}. It has a lot of hourly level data like timestamps, PM2.5 readings, AQI values, nowcast conc., raw conc., and also some quality flags. But honestly, depending on just one source felt a bit risky, since air quality data can be noisy. So I also added PM2.5 values from the WHO Air Quality Database. Putting both sources together gave me a cleaner and also more reliable dataset to use.
+
+\subsection{Data Preprocessing}
+The dataset, as expected, was not neat at all, so I had to spend time fixing it. I followed a few steps:
+
+\begin{itemize}
+    \item \textbf{Missing \& wrong values:} Any row with blanks or strange entries like ``--999'' was just removed, otherwise it would mess up results.
+    \item \textbf{Daily conversion:} Since my target is \textit{daily} AQI prediction, I averaged the hourly numbers into daily values. If one day had less than 24 records, I just skipped it.
+    \item \textbf{AQI categories:} I used the EPA standard ranges (Good, Moderate, Unhealthy for Sensitive Groups, Unhealthy, Very Unhealthy, Hazardous). Then I coded them into numbers from 0 to 5, so the algorithms could understand.
+    \item \textbf{Choosing features:} Based on both correlation check and a bit of domain reading, I kept only PM2.5, raw conc. and nowcast conc. Other features didn’t add much.
+    \item \textbf{Data split:} Lastly, I split it into train (70\%), validation (15\%), and test (15\%). The validation part was used for tuning and the test was kept untouched till the final stage.
+\end{itemize}
+
+\subsection{Model Selection and Training}
+I tried out five machine learning models to see which one works best.
+
+\begin{itemize}
+    \item \textbf{XGBoost:} very fast and usually high accuracy.
+    \item \textbf{Random Forest:} builds many decision trees and averages them, so it avoids overfitting.
+    \item \textbf{MLP (Multilayer Perceptron):} a simple neural network, with one hidden layer.
+    \item \textbf{SVM:} finds the best margin/hyperplane to separate classes.
+    \item \textbf{Logistic Regression:} a basic linear model, used as my baseline.
+\end{itemize}
+
+All models were run using Python’s Scikit-learn. I tuned them using grid search + cross-validation to make sure they’re optimized, although in some cases the default settings already worked decently.
+
+\subsection{Evaluation Metrics}
+To evaluate the models fairly, I used several standard metrics. Accuracy alone was not enough because of class imbalance, so I focused more on precision, recall, F1, and ROC--AUC.
+
+\begin{itemize}
+    \item \textbf{Accuracy} measures overall correctness:
+    \[
+    Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+    \]
+
+    \item \textbf{Precision} tells us how many of the predicted positives were actually correct:
+    \[
+    Precision = \frac{TP}{TP + FP}
+    \]
+
+    \item \textbf{Recall} (also called sensitivity) shows how many of the actual positives the model was able to catch:
+    \[
+    Recall = \frac{TP}{TP + FN}
+    \]
+
+    \item \textbf{F1-Score} is the harmonic mean of precision and recall, balancing both:
+    \[
+    F1 = \frac{2 \times Precision \times Recall}{Precision + Recall}
+    \]
+
+    \item \textbf{ROC--AUC} gives a threshold-independent measure of classification ability. It is computed from the area under the ROC curve, which plots True Positive Rate (TPR) against False Positive Rate (FPR):
+    \[
+    TPR = \frac{TP}{TP + FN}, \quad FPR = \frac{FP}{FP + TN}
+    \]
+\end{itemize}
+
+Since some AQI categories were rare in the dataset, accuracy could be misleading. That’s why I mainly relied on F1-score and per-class precision/recall when judging the models.
+
+
+
+
+
+
+
+\section{Results Analysis}
+
+The performance of all five machine learning models was evaluated on a held-out test set comprising 3,073 daily samples. This section presents a comprehensive analysis of the experimental results.
+
+\subsection{Overall Performance}
+XGBoost emerged as the top-performing model with an accuracy of 83.34\% and an F1-score of 83.15\%, closely followed by Random Forest. The high ROC-AUC scores (all > 0.93) demonstrate excellent model capability in distinguishing between the different AQI categories. The ensemble methods (XGBoost and Random Forest) consistently outperformed other classifiers, suggesting their robustness in handling the complex, non-linear relationships within the environmental data.
+
+\subsection{Per-Class Performance Analysis}
+A detailed examination of the classification reports reveals critical insights into model behavior across different air quality levels:
+\begin{itemize}
+    \item \textbf{High-Performance Classes:} All models achieved excellent performance (F1-score > 0.90) for the ``Good'' AQI category, which is also the most prevalent class in the dataset. This indicates reliable identification of healthy air quality days.
+    \item \textbf{Moderate-Performance Classes:} Categories like ``Moderate,'' ``Unhealthy for Sensitive Groups,'' ``Unhealthy,'' and ``Very Unhealthy'' showed good performance (F1-scores between 0.68 and 0.81), with ensemble methods maintaining the highest scores.
+    \item \textbf{Class Imbalance Challenge:} The ``Hazardous'' class, representing the most severe air quality, proved challenging for all models. While XGBoost achieved the highest precision (0.88), its recall (0.42) was low, indicating that many truly hazardous days were misclassified. This is directly attributable to the severe class imbalance, with only 33 hazardous instances in the test set.
+\end{itemize}
+
+
+% Single table for Logistic Regression (centered)
+\begin{table}[h!]
+\centering
+\caption{CLASSIFICATION REPORT OF LOGISTIC REGRESSION}
+\label{tab:lr_details}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+ & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+\hline
+Good & 0.84 & 0.90 & 0.87 & 1288 \\
+Hazardous & 0.45 & 0.82 & 0.58 & 33 \\
+Moderate & 0.76 & 0.62 & 0.68 & 863 \\
+Unhealthy & 0.62 & 0.71 & 0.66 & 275 \\
+Unhealthy for Sensitive & 0.65 & 0.66 & 0.65 & 414 \\
+Very Unhealthy & 0.69 & 0.68 & 0.68 & 200 \\
+\hline
+Accuracy &  &  & 0.7556 & 3073 \\
+Macro Avg & 0.67 & 0.73 & 0.69 & 3073 \\
+Weighted Avg & 0.76 & 0.76 & 0.75 & 3073 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{1cm}
+% First pair of tables - XGBoost and Random Forest side by side
+\begin{table}[h!]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\caption{CLASSIFICATION REPORT OF XGBOOST CLASSIFIER}
+\label{tab:xgboost_details}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+ & \textbf{P} & \textbf{R} & \textbf{F1} & \textbf{S} \\
+\hline
+Good & 0.91 & 0.93 & 0.92 & 1288 \\
+Hazardous & 0.88 & 0.42 & 0.57 & 33 \\
+Moderate & 0.82 & 0.81 & 0.81 & 863 \\
+Unhealthy & 0.70 & 0.66 & 0.68 & 275 \\
+USG & 0.76 & 0.71 & 0.74 & 414 \\
+Very Unhealthy & 0.73 & 0.84 & 0.78 & 200 \\
+\hline
+Accuracy &  &  & 0.8334 & 3073 \\
+Macro Avg & 0.80 & 0.73 & 0.75 & 3073 \\
+Weighted Avg & 0.83 & 0.83 & 0.83 & 3073 \\
+\hline
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\caption{CLASSIFICATION REPORT OF RANDOM FOREST}
+\label{tab:rf_details}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+ & \textbf{P} & \textbf{R} & \textbf{F1} & \textbf{S} \\
+\hline
+Good & 0.91 & 0.93 & 0.92 & 1288 \\
+Hazardous & 0.82 & 0.42 & 0.56 & 33 \\
+Moderate & 0.81 & 0.80 & 0.81 & 863 \\
+Unhealthy & 0.70 & 0.68 & 0.69 & 275 \\
+USG & 0.74 & 0.72 & 0.73 & 414 \\
+Very Unhealthy & 0.75 & 0.81 & 0.78 & 200 \\
+\hline
+Accuracy &  &  & 0.8311 & 3073 \\
+Macro Avg & 0.79 & 0.73 & 0.75 & 3073 \\
+Weighted Avg & 0.83 & 0.83 & 0.83 & 3073 \\
+\hline
+\end{tabular}
+\end{minipage}
+\end{table}
+
+\vspace{1cm}
+
+% Second pair of tables - MLP and SVM side by side
+\begin{table}[h!]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\caption{CLASSIFICATION REPORT OF MLP CLASSIFIER}
+\label{tab:mlp_details}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+ & \textbf{P} & \textbf{R} & \textbf{F1} & \textbf{S} \\
+\hline
+Good & 0.90 & 0.94 & 0.92 & 1288 \\
+Hazardous & 0.79 & 0.33 & 0.47 & 33 \\
+Moderate & 0.82 & 0.80 & 0.81 & 863 \\
+Unhealthy & 0.69 & 0.70 & 0.69 & 275 \\
+USG & 0.77 & 0.71 & 0.74 & 414 \\
+Very Unhealthy & 0.74 & 0.77 & 0.75 & 200 \\
+\hline
+Accuracy &  &  & 0.8298 & 3073 \\
+Macro Avg & 0.78 & 0.71 & 0.73 & 3073 \\
+Weighted Avg & 0.83 & 0.83 & 0.83 & 3073 \\
+\hline
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\caption{CLASSIFICATION REPORT OF SVM CLASSIFIER}
+\label{tab:svm_details}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+ & \textbf{P} & \textbf{R} & \textbf{F1} & \textbf{S} \\
+\hline
+Good & 0.91 & 0.88 & 0.90 & 1288 \\
+Hazardous & 0.37 & 0.58 & 0.45 & 33 \\
+Moderate & 0.78 & 0.78 & 0.78 & 863 \\
+Unhealthy & 0.66 & 0.67 & 0.66 & 275 \\
+USG & 0.71 & 0.73 & 0.72 & 414 \\
+Very Unhealthy & 0.72 & 0.71 & 0.72 & 200 \\
+\hline
+Accuracy &  &  & 0.8002 & 3073 \\
+Macro Avg & 0.69 & 0.73 & 0.70 & 3073 \\
+Weighted Avg & 0.81 & 0.80 & 0.80 & 3073 \\
+\hline
+\end{tabular}
+\end{minipage}
+\end{table}
+
+\vspace{1cm}
+
+
+
+
+\begin{table}[h!]
+\centering
+\caption{OVERALL MODEL PERFORMANCE COMPARISON}
+\label{tab:overall_results}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\hline
+XGBoost & 0.8334 & 0.8315 & 0.9714 \\
+Random Forest & 0.8311 & 0.8297 & 0.9709 \\
+MLP & 0.8298 & 0.8276 & 0.9676 \\
+SVM & 0.8002 & 0.8022 & 0.9639 \\
+Logistic Regression & 0.7556 & 0.7536 & 0.9388 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+\section{Discussion}
+
+\subsection{Interpretation of Results}
+At first, I wasn’t sure which model would perform best, but the results clearly show that ensemble tree-based models like XGBoost and Random Forest were the strongest. This isn’t too surprising, honestly, because these models can capture complex, non-linear relationships between the features without me having to do a lot of extra feature engineering. I’ve noticed that their high ROC-AUC scores also suggest they learned the differences between AQI categories pretty well.
+
+Compared to Logistic Regression, the better performance of the ensemble methods really highlights that pollutant concentrations and AQI categories aren’t just linked in a straight line. I also tried the MLP, and it did fairly well, although at first it seemed a bit tricky to tune. It shows that neural networks can work for this task, but they probably need more data and careful parameter tuning to consistently beat the tree-based models.
+
+\subsection{Addressing Class Imbalance}
+Predicting the ``Hazardous'' category was, as expected, the hardest. Extreme pollution events are rare, but obviously, they’re the most important ones. At first I thought the models would catch most of them, but the recall was low — meaning a lot of real hazardous cases were missed. On the other hand, the precision was high, so at least the false alarms were minimized. In a real warning system, though, I think it might be better to focus on recall even if it causes more false positives, because missing a hazardous day could be risky.
+
+I’ve been thinking that in the future, techniques like SMOTE, oversampling, or adjusting class weights could help balance the classes and improve predictions for rare events.
+
+\subsection{Comparison with Related Work}
+Our findings are actually pretty consistent with what other researchers have found. Random Forest achieved about 83\% accuracy, which is a bit lower than Chaturvedi (2024) who reported 99\%, but that’s probably due to differences in location, data resolution, and the fact that we did multi-class classification instead of regression or binary classification. At first I thought this difference was concerning, but after looking closer, it actually makes sense.
+
+So, we focus on daily AQI categorization for Dhaka adds something new to the literature, which mostly focuses on other regions or hourly predictions. So I’d say this study fills a nice research gap.
+
+\subsection{Practical Implications}
+From a practical point of view, having an 83\% accuracy for daily AQI predictions is actually quite meaningful. Policymakers or public health officials could use it to:
+
+\begin{itemize}
+    \item Send timely health advisories to vulnerable groups.
+    \item Decide on temporary actions, like limiting traffic or industrial activity on predicted poor air quality days.
+    \item Improve public awareness by sharing reliable daily forecasts.
+\end{itemize}
+
+Even when the model misclassifies between adjacent categories, it’s not too critical in practice. For example, the actions recommended for ``Unhealthy for Sensitive Groups'' and ``Unhealthy'' are usually quite similar, so a small misclassification doesn’t change much.
+
+
+
+\section{Conclusion}
+
+\subsection{Summary of Findings}
+
+This study demonstrates the effectiveness of machine learning models in predicting daily AQI categories for Dhaka, Bangladesh. The experimental results revealed promising performance across all evaluated classifiers. Among the five models tested, XGBoost emerged as the top performer with an accuracy of 83.34\% and an F1-score of 83.15\%, closely followed by Random Forest. The strong performance of ensemble methods can be attributed to their ability to capture complex relationships between pollutant concentrations and air quality categories without extensive manual feature engineering.
+
+The results strongly support the alternative hypothesis (H\textsubscript{1}) that a significant, learnable relationship exists between the input features (PM\textsubscript{2.5}, Nowcast Concentration, and Raw Concentration) and the daily AQI category. All models performed substantially better than random guessing, with the ensemble methods demonstrating particularly robust learning capabilities. Although certain categories presented prediction challenges, the overall patterns were sufficiently clear for the models to learn effectively.
+
+\subsection{Limitations}
+
+Several limitations were identified during this research. The "Hazardous" category proved particularly challenging due to severe class imbalance, resulting in lower recall rates for this critical class. The initial feature selection, while effective, may have been constrained by the exclusion of meteorological data such as wind speed, humidity, and temperature, as well as temporal features including seasonal variations and day-of-week patterns. These factors significantly influence pollutant dispersion and concentration levels, suggesting that their inclusion could enhance predictive accuracy.
+
+\subsection{Future Work}
+
+Several promising directions emerge for future research:
+
+\begin{itemize}
+    \item Integration of real-time meteorological and temporal data to enrich the feature set and improve prediction accuracy
+    \item Application of advanced techniques to address class imbalance, such as Synthetic Minority Over-sampling Technique (SMOTE) or weighted loss functions
+    \item Exploration of deep learning architectures, including Long Short-Term Memory (LSTM) networks and Transformers to capture long-term temporal dependencies
+    \item Extension of the dataset to include more recent years for longitudinal validation of model performance
+    \item Development of a real-time forecasting system based on the best-performing model for public use and policy guidance
+\end{itemize}
+
+This study establishes a solid foundation for reliable daily AQI categorization in Dhaka using machine learning approaches. Despite existing challenges, we believe that the research demonstrates significant potential for enhancing public health awareness.
+
+
+
+% To print the credit authorship contribution details
+\printcredits
+
+%% Loading bibliography style file
+% \bibliographystyle{model1-num-names}
+% \bibliographystyle{cas-model2-names}
+\bibliographystyle{unsrt}
+
+% Loading bibliography database
+%\bibliography{cas-refs}
+
+% % Biography
+% \bio{}
+% % Here goes the biography details.
+% \endbio
+
+% \bio{pic1}
+% % Here goes the biography details.
+% \endbio
+
+
+
+
+
+\begin{thebibliography}{00}
+
+\bibitem{who_report_2021} World Health Organization. (2021). \textit{Global Air Quality Guidelines}.
+
+\bibitem{epa_aqi_2020} United States Environmental Protection Agency. (2020). \textit{Air Quality Index Reporting}.
+
+\bibitem{world_bank_2021} World Bank. (2021). \textit{Bangladesh Environmental Analysis}.
+
+\bibitem{dob_2022} Department of Environment, Bangladesh. (2022). \textit{Annual Report on Air Quality}.
+
+\bibitem{zhang_2017} Zhang, H., \& Zhang, Y. (2017). Comparison of ARIMA and ML models for air quality prediction.
+
+\bibitem{box_jenkins_1976} Box, G. E. P., \& Jenkins, G. M. (1976). \textit{Time Series Analysis: Forecasting and Control}.
+
+\bibitem{liu_2018} Liu, H., et al. (2018). ARIMA modeling of PM2.5 concentrations in urban China.
+
+\bibitem{islam_2021_sarima} Islam, A. R. M. T., et al. (2021). SARIMA Modeling of Weekly AQI for Seasonal Pattern Analysis.
+
+\bibitem{gupta_2021} Gupta, A., et al. (2021). Comparative Analysis of ML Models for AQI Prediction.
+
+\bibitem{breiman_2001} Breiman, L. (2001). Random Forests. \textit{Machine Learning}.
+
+\bibitem{sitha_ram_2021} Sitha Ram, V., et al. (2021). High-Dimensional AQI Data Analysis Using XGBoost.
+
+\bibitem{chaturvedi_2022} Chaturvedi, P. (2022). A Multimodel Approach for AQI Forecasting.
+
+\bibitem{singh_2021} Singh, K., et al. (2021). Hybrid Models for Air Quality Classification.
+
+\bibitem{islam_2022_satellite} Islam, M. M., et al. (2022). Estimating PM2.5 using Satellite Data.
+
+\bibitem{li_2020} Li, T., et al. (2020). CNN-Based Spatiotemporal PM2.5 Prediction.
+
+\bibitem{hochreiter_1997} Hochreiter, S., \& Schmidhuber, J. (1997). Long Short-Term Memory.
+
+\bibitem{zaytar_2016} Zaytar, M. A., \& El Amrani, C. (2016). LSTM for Weather Forecasting.
+
+\bibitem{lecun_1998} LeCun, Y., et al. (1998). Gradient-Based Learning Applied to Document Recognition.
+
+\bibitem{yi_2021} Yi, X., et al. (2021). Hybrid CNN-LSTM for PM2.5 Prediction.
+
+\bibitem{vaswani_2017} Vaswani, A., et al. (2017). Attention Is All You Need.
+
+\bibitem{kumar_2022} Kumar, P., et al. (2022). Challenges in Air Quality Monitoring in Developing Countries.
+
+\end{thebibliography}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{thebibliography}
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
